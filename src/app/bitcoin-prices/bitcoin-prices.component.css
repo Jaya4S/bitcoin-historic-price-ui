@@ -1,4 +1,11 @@
 .mat-cell {
     padding: 10px;
   }
-  
+.error-message {
+    color: red;
+    font-weight: bold;
+    padding: 10px !important;
+    border-radius: 0 !important;
+    position: relative; 
+    margin-top: 10px;
+}  

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { BitcoinPriceService } from '../service/bitcoin-prices.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { error } from 'util';
 
 @Component({
   selector: 'app-bitcoin-prices',
@@ -15,6 +16,8 @@ export class BitcoinPricesComponent {
   dataSource: MatTableDataSource<any>;
   highestPrice: number;
   lowestPrice: number;
+  errorMessage: string;
+  isBPIRespEmpty: boolean = false;
 
   constructor(private bitcoinPriceService: BitcoinPriceService) { }
 
@@ -22,9 +25,15 @@ export class BitcoinPricesComponent {
     this.bitcoinPriceService.getHistoricalBitcoinPrices(this.startDate, this.endDate, this.currency)
       .subscribe((response: any) => {
         this.bitcoinPrices = response.bpi;
-        this.dataSource = new MatTableDataSource<any>(Object.entries(this.bitcoinPrices).map(([date, price]) => ({ date, price })));
-        this.highestPrice = response.highestPriceDate;
-        this.lowestPrice = response.lowestPriceDate;
+        if(this.bitcoinPrices) {
+          this.dataSource = new MatTableDataSource<any>(Object.entries(this.bitcoinPrices).map(([date, price]) => ({ date, price })));
+          this.highestPrice = response.highestPriceDate;
+          this.lowestPrice = response.lowestPriceDate;
+        } else {
+          this.isBPIRespEmpty = true;
+        }
+      }, error => {
+        this.errorMessage = error.error;
       });
   }
 
