@@ -1,0 +1,14 @@
+<div>
+  <h2>Bitcoin Prices</h2>
+  <div *ngIf="bitcoinPrices">
+    <p>Start Date: {{ startDate }}</p>
+    <p>End Date: {{ endDate }}</p>
+    <p>Currency: {{ currency }}</p>
+    <ul>
+      <li *ngFor="let price of bitcoinPrices.bpi | keyvalue">
+        {{ price.key }}: {{ price.value | currency: currency }}
+      </li>
+    </ul>
+  </div>
+  <button (click)="getBitcoinPrices()">Refresh</button>
+</div>
