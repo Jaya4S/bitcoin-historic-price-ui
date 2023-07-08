@@ -1,31 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
+import { BitcoinPriceService } from '../service/bitcoin-prices.service';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-bitcoin-prices',
   templateUrl: './bitcoin-prices.component.html',
   styleUrls: ['./bitcoin-prices.component.css']
 })
-export class BitcoinPricesComponent implements OnInit {
+export class BitcoinPricesComponent {
   startDate: string;
   endDate: string;
   currency: string;
   bitcoinPrices: any;
+  dataSource: MatTableDataSource<any>;
+  highestPrice: number;
+  lowestPrice: number;
 
-  constructor(private http: HttpClient) { }
-
-  ngOnInit() {
-    // Initialize default values
-    this.startDate = '2022-01-01';
-    this.endDate = '2022-12-31';
-    this.currency = 'USD';
-    this.getBitcoinPrices();
-  }
+  constructor(private bitcoinPriceService: BitcoinPriceService) { }
 
   getBitcoinPrices() {
-    const url = `http://localhost:8080/api/bitcoin/prices?startDate=${this.startDate}&endDate=${this.endDate}&currency=${this.currency}`;
-    this.http.get(url).subscribe((response: any) => {
-      this.bitcoinPrices = response;
-    });
+    this.bitcoinPriceService.getHistoricalBitcoinPrices(this.startDate, this.endDate, this.currency)
+      .subscribe((response: any) => {
+        this.bitcoinPrices = response.bpi;
+        this.dataSource = new MatTableDataSource<any>(Object.entries(this.bitcoinPrices).map(([date, price]) => ({ date, price })));
+        this.highestPrice = response.highestPriceDate;
+        this.lowestPrice = response.lowestPriceDate;
+      });
   }
+
 }

@@ -1,17 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class BitcoinPriceService {
-  private apiBaseUrl = 'http://localhost:8080/api/bitcoin/prices';
+  private apiBaseUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) { }
 
   getHistoricalBitcoinPrices(startDate: string, endDate: string, currency: string): Observable<any> {
-    const url = `${this.apiBaseUrl}?start=${startDate}&end=${endDate}&currency=${currency}`;
+    const url = `${this.apiBaseUrl}/bitcoin/prices?startDate=${startDate}&endDate=${endDate}&currency=${currency}`;
     return this.http.get<any>(url);
   }
 }

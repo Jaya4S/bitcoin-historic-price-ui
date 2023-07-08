@@ -1,14 +1,30 @@
 <div>
-  <h2>Bitcoin Prices</h2>
-  <div *ngIf="bitcoinPrices">
-    <p>Start Date: {{ startDate }}</p>
-    <p>End Date: {{ endDate }}</p>
-    <p>Currency: {{ currency }}</p>
-    <ul>
-      <li *ngFor="let price of bitcoinPrices.bpi | keyvalue">
-        {{ price.key }}: {{ price.value | currency: currency }}
-      </li>
-    </ul>
+    <h2>Historical Bitcoin Prices</h2>
+    <label>Start Date:</label>
+    <input type="date" [(ngModel)]="startDate">
+    <label>End Date:</label>
+    <input type="date" [(ngModel)]="endDate">
+    <label>Currency:</label>
+    <input type="text" [(ngModel)]="currency">
+    <button (click)="getBitcoinPrices()">Get Prices</button>
+  
+    <div *ngIf="bitcoinPrices">
+      <h3>Bitcoin Prices:</h3>
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="Date">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let element">{{ element.date }}</td>
+        </ng-container>
+        <ng-container matColumnDef="Price">
+          <th mat-header-cell *matHeaderCellDef>Price</th>
+          <td mat-cell *matCellDef="let element">{{ element.price }}
+              <span *ngIf="element.date === highestPrice">(high)</span>
+              <span *ngIf="element.date === lowestPrice">(low)</span>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="['Date', 'Price']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['Date', 'Price']"></tr>
+      </table>
+    </div>
   </div>
-  <button (click)="getBitcoinPrices()">Refresh</button>
-</div>
+  
