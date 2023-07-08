@@ -13,6 +13,7 @@ export class BitcoinPriceService {
   constructor(private http: HttpClient) { }
 
   getHistoricalBitcoinPrices(startDate: string, endDate: string, currency: string): Observable<any> {
+    currency = currency == undefined ? "USD" : currency;
     const url = `${this.apiBaseUrl}/bitcoin/prices?startDate=${startDate}&endDate=${endDate}&currency=${currency}`;
     return this.http.get<any>(url);
   }
